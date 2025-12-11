@@ -14,12 +14,13 @@ export default function Footer() {
             <p>
               Your personal library tracker. Discover new books, manage your
               collection, and track your reading progress all in one place.
+              Okeit_Stack Library
             </p>
           </Col>
 
           {/* Column 2: Quick Links */}
           <Col md={4} className="mb-4">
-            <h5 className="text-uppercase fw-bold">Quick Links</h5>
+            <h5 className="text-uppercase fw-bold">Links</h5>
             <ul className="list-unstyled">
               <li className="mb-2">
                 <Link to="/" className="text-light text-decoration-none">
