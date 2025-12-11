@@ -1,0 +1,26 @@
+/* Container for all cards */
+.book-grid-container {
+  display: grid;
+  grid-template-columns: 1fr; /* Default: 1 column (small devices) */
+  gap: 20px; /* Space between cards */
+  padding: 20px;
+}
+
+/* For big devices (tablets and desktops) */
+@media (min-width: 992px) {
+  .book-grid-container {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  }
+}
+
+/* Individual Card Styling */
+.book-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex; /* Use flexbox for internal layout */
+  flex-direction: column; /* Stack image and text vertically for better fit in grid */
+  height: 100%; /* Make all cards same height */
+}
