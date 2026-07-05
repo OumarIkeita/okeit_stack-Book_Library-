@@ -1,30 +1,59 @@
 import React from "react";
 import { Card, Row, Col, Container, Button } from "react-bootstrap";
 import "./card.css";
-export default function BookCard({ Books }) {
-  return (
-    <Container fluid="md">
-      <Row>
-        {Books.map((book) => {
-          const infos = book.volumeInfo;
-          const access = book.accessInfo;
-          if (!infos) return null;
-          const thumbnail = infos.imageLinks?.thumbnail;
 
+export default function BookCard({ Books = [] }) {
+  const handleDownload = (bookKey, format = "epub") => {
+    const downloadUrl = `https://openlibrary.org${bookKey}/${format}`;
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = true;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (!Array.isArray(Books) || Books.length === 0) {
+    return (
+      <Container fluid="md" className="pb-5">
+        <div className="hero-card p-4 text-center">
+          <p className="text-muted mb-0">Search for a book to see results.</p>
+        </div>
+      </Container>
+    );
+  }
+
+  return (
+    <Container fluid="md" className="pb-5">
+      <Row>
+        {Books.map((book, index) => {
+          const infos = book.volumeInfo || {};
+          const access = book.accessInfo || {};
+          const isFreeAvailable = access?.free?.isAvailable;
+          const bookKey = access?.free?.key;
+          const title = infos.title || "Untitled";
+          const authors = infos.authors?.length ? infos.authors : ["Unknown"];
+          const thumbnail = infos.imageLinks?.thumbnail || null;
+          const previewLink = infos.previewLink || "";
           const pdfLink =
-            access?.pdf?.downloadLink || access?.pdf?.acsTokenLink;
-          const isPdfAvailable = access?.pdf?.isAvailable && pdfLink;
-          const previewLink = infos.previewLink;
+            access?.pdf?.downloadLink || access?.pdf?.acsTokenLink || "";
+          const isPdfAvailable = Boolean(pdfLink);
 
           return (
-            <Col key={book.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
-              <Card className="h-100 shadow-sm">
-                {/* Image Handling */}
+            <Col
+              key={book.id || `${title}-${index}`}
+              xs={12}
+              sm={6}
+              md={4}
+              lg={3}
+              className="mb-4"
+            >
+              <Card className="h-100 shadow-sm book-card">
                 <div
+                  className="book-cover"
                   style={{
                     height: "250px",
                     overflow: "hidden",
-                    background: "#f8f9fa",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -34,7 +63,7 @@ export default function BookCard({ Books }) {
                     <Card.Img
                       variant="top"
                       src={thumbnail}
-                      alt={infos.title}
+                      alt={title}
                       style={{
                         height: "100%",
                         width: "100%",
@@ -53,16 +82,36 @@ export default function BookCard({ Books }) {
                   <Card.Title
                     style={{ fontSize: "1.1rem", fontWeight: "bold" }}
                   >
-                    {infos.title}
+                    {title}
                   </Card.Title>
 
                   <Card.Text
                     className="text-secondary mb-2"
                     style={{ fontSize: "0.9rem" }}
                   >
-                    <strong>Author:</strong>{" "}
-                    {infos.authors ? infos.authors.join(", ") : "Unknown"}
+                    <strong>Author:</strong> {authors.join(", ")}
                   </Card.Text>
+
+                  <div className="d-flex flex-wrap gap-2 mb-3">
+                    <span className="book-chip">
+                      {infos.categories?.[0] || "General"}
+                    </span>
+                    <span className="book-chip">
+                      {infos.publishedDate || "Unknown"}
+                    </span>
+                    {isFreeAvailable && (
+                      <span
+                        className="book-chip"
+                        style={{
+                          background: "#dcfce7",
+                          color: "#15803d",
+                          fontWeight: "800",
+                        }}
+                      >
+                        Free Download
+                      </span>
+                    )}
+                  </div>
 
                   <Card.Text
                     className="text-muted mb-2"
@@ -71,38 +120,38 @@ export default function BookCard({ Books }) {
                     <strong>Published:</strong> {infos.publishedDate || "N/A"}
                   </Card.Text>
 
-                  {/* mt-auto pushes this text to the bottom if cards vary in height */}
-                  <Card.Text
-                    className="mt-auto text-muted"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    <small>
-                      Category:{" "}
-                      {infos.categories ? infos.categories[0] : "Unknown"}
-                    </small>
-                  </Card.Text>
                   <div className="mt-auto d-grid gap-2">
-                    {/* BUTTON 1: Open in Web Reader (Always available) */}
                     <Button
-                      href={previewLink}
+                      href={previewLink || undefined}
                       target="_blank"
                       rel="noopener noreferrer"
                       variant="primary"
                       size="sm"
+                      disabled={!previewLink}
                     >
                       Read Online
                     </Button>
 
-                    {/* BUTTON 2: Download PDF (Only if available) */}
                     {isPdfAvailable && (
                       <Button
                         href={pdfLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        variant="outline-success" // Outline style to distinguish from Read button
+                        variant="outline-success"
                         size="sm"
                       >
                         Download PDF
+                      </Button>
+                    )}
+
+                    {isFreeAvailable && (
+                      <Button
+                        onClick={() => handleDownload(bookKey, "epub")}
+                        variant="success"
+                        size="sm"
+                        className="fw-semibold"
+                      >
+                        Free Download
                       </Button>
                     )}
                   </div>

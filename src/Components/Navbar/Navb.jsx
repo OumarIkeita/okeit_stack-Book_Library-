@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from "react-bootstrap";
 import logo from "./Keita.png";
+
 export default function Navb() {
   return (
     <Navbar
@@ -8,14 +9,13 @@ export default function Navb() {
       variant="dark"
       expand="lg"
       sticky="top"
-      className="shadow-sm"
+      className="shadow-sm py-3"
     >
       <Container>
-        {/* Brand / Logo */}
         <Navbar.Brand
           as={Link}
           to="/"
-          style={{ fontWeight: "bold", fontSize: "1.5rem" }}
+          className="d-flex align-items-center gap-2"
         >
           <Image
             src={logo}
@@ -25,16 +25,22 @@ export default function Navb() {
             rounded
             className="d-inline-block align-top"
           />
+          <span className="navbar-brand-text text-white">
+            Okei_Stack Library
+          </span>
         </Navbar.Brand>
 
-        {/* Hamburger Menu Toggle (for mobile) */}
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ms-auto">
-            <Nav.Link as={Link} to="/">
+          <Nav className="ms-auto gap-2">
+            <Nav.Link as={Link} to="/" className="text-light fw-semibold">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/favorites">
+            <Nav.Link
+              as={Link}
+              to="/favorites"
+              className="text-light fw-semibold"
+            >
               Favorites
             </Nav.Link>
           </Nav>
