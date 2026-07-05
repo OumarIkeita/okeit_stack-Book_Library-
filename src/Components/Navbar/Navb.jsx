@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from "react-bootstrap";
-import logo from "./Keita.png";
+import logo from "./log.png";
 
 export default function Navb() {
   return (
